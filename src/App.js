@@ -1,26 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React,{useState,useEffect} from 'react';
+import {getWeather} from './services/weatherAPI';
+import {Search} from './components/Search/Search';
+import {WeatherCard} from './components/WeatherCard/WeatherCard';
+import styles from './App.module.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export const App = () => {
+const [data,setData] = useState({});
+const [query, setQuery] = useState('Tellicherry');
+
+const handleSearch = (str) => {
+    setQuery(str);
 }
 
-export default App;
+const getWeatherData = async () => {
+    const data = await getWeather(query)
+    data && setData(data)
+}
+
+useEffect(() => {
+    getWeatherData()
+},[query])
+
+return (<div className={styles.App}>
+        <div className={styles.container}>
+        <Search setSearchTerm={handleSearch}/>
+        <WeatherCard data={data}/>
+        </div>
+</div>)
+}
